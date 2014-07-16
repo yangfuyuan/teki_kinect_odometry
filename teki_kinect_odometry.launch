@@ -1,5 +1,0 @@
-<launch>
-  <!-- remap applies to all future statements in this scope. -->
-  <remap from="input" to="/camera/depth/points"/>
-  <node name="main" pkg="teki_kinect_odometry" type="main" />
-</launch>
