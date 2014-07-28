@@ -35,11 +35,17 @@
 // ROS specific includes
 #include <ros/ros.h>
 #include <ros/console.h>
+
 #include <sensor_msgs/PointCloud2.h>
+#include <geometry_msgs/Transform.h>
+
 #include <pcl_conversions/pcl_conversions.h>
+#include <eigen_conversions/eigen_msg.h>
+
 // PCL specific includes
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+
 #include <pcl/registration/icp.h>
 #include <pcl/filters/filter_indices.h>
 #include <pcl/filters/voxel_grid.h>
@@ -77,9 +83,11 @@ void callback(const sensor_msgs::PointCloud2ConstPtr &input)
     pcl::PointCloud<pcl::PointXYZ> PCxyzAligned;
     icp.align(PCxyzAligned);
     // Obtain the transformation that aligned cloud_source to cloud_source_registered
-    Eigen::Matrix4f transformation = icp.getFinalTransformation();
-
-    ROS_INFO_STREAM("Transformation: " << std::endl << transformation);  // boost::lexical_cast<std::string>
+    Eigen::Matrix4f transf4f = icp.getFinalTransformation();
+    const Eigen::Affine3d transf3d(transf4f.cast<double>());
+    ROS_INFO_STREAM("Affine3d: " << std::endl << transf4f);
+    geometry_msgs::Transform transform_msg;
+    // tf::transformEigenToMsg(transf3d, transform_msg);  // TODO: Undefined reference to error -_-
   }
   else
   {
