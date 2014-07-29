@@ -8,6 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
   roslint
   roscpp
   sensor_msgs
+  geometry_msgs
+  eigen_conversions
   pcl_conversions
   pcl_ros
 )

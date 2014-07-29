@@ -87,7 +87,7 @@ void callback(const sensor_msgs::PointCloud2ConstPtr &input)
     const Eigen::Affine3d transf3d(transf4f.cast<double>());
     ROS_INFO_STREAM("Affine3d: " << std::endl << transf4f);
     geometry_msgs::Transform transform_msg;
-    // tf::transformEigenToMsg(transf3d, transform_msg);  // TODO: Undefined reference to error -_-
+    tf::transformEigenToMsg(transf3d, transform_msg);
   }
   else
   {
