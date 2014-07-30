@@ -53,6 +53,8 @@
 namespace
 {
 pcl::PointCloud<pcl::PointXYZ>::Ptr PCxyzPrevious;
+
+ros::Publisher pub;
 }  // namespace
 
 void callback(const sensor_msgs::PointCloud2ConstPtr &input)
@@ -87,10 +89,13 @@ void callback(const sensor_msgs::PointCloud2ConstPtr &input)
     icp.align(PCxyzAligned);
     // Obtain the transformation that aligned cloud_source to cloud_source_registered
     Eigen::Matrix4f transf4f = icp.getFinalTransformation();
+
+    // ROS_INFO_STREAM("Transf4f: " << std::endl << transf4f);
+
     const Eigen::Affine3d transf3d(transf4f.cast<double>());
-    //ROS_DEBUG_STREAM("Affine3d: " << std::endl << transf4f);
     geometry_msgs::Transform transform_msg;
     tf::transformEigenToMsg(transf3d, transform_msg);
+    pub.publish(transform_msg);
   }
   else
   {
@@ -109,9 +114,11 @@ int main(int argc, char **argv)
   // Create a ROS subscriber for the input point cloud
   ros::Subscriber sub = nh.subscribe("kinect_input", 1, callback);
 
-  // Spin
+  pub = nh.advertise<geometry_msgs::Transform>("transformation", 1);
+
   ROS_INFO_STREAM("Node initialized.");
 
+  // Spin
   ros::spin();
   // return 0;
 }
