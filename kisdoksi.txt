@@ -54,8 +54,12 @@ http://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
 http://answers.ros.org/question/37609/counterpart-to-pcl_rostransformasmatrix/
 http://stackoverflow.com/questions/23946658/error-mixing-types-with-eigen-matrices
 
-Most azzal küzdök, hogy ezt ROS üzenetté konvertáljam, csak az undefined reference hiba megfogott:
-http://docs.ros.org/hydro/api/eigen_conversions/html/eigen__msg_8h.html
+Most azzal küzdök, hogy ezt ROS üzenetté konvertáljam, csak az undefined reference hiba megfogott
 
-CMakeFiles/main.dir/src/main.cpp.o: In function `callback(boost::shared_ptr<sensor_msgs::PointCloud2_<std::allocator<void> > const> const&)':
-main.cpp:(.text+0x438): undefined reference to `tf::transformEigenToMsg(Eigen::Transform<double, 3, 2, 0> const&, geometry_msgs::Transform_<std::allocator<void> >&)'
+---------------------------
+
+Leesett a hiba, nem állítottam be a CMakeLists-ben az új incldueokat
+
+Ami szükséges, hogy lelassítsam a Kinectet, 30Hz frissítés az nagyon sok:
+http://answers.ros.org/question/54360/reduce-frame-rate-fps-kinect-openni_launch/
+

@@ -50,7 +50,10 @@
 #include <pcl/filters/filter_indices.h>
 #include <pcl/filters/voxel_grid.h>
 
+namespace
+{
 pcl::PointCloud<pcl::PointXYZ>::Ptr PCxyzPrevious;
+}  // namespace
 
 void callback(const sensor_msgs::PointCloud2ConstPtr &input)
 {
@@ -65,7 +68,7 @@ void callback(const sensor_msgs::PointCloud2ConstPtr &input)
 
   if (PCxyzPrevious)
   {
-    ROS_INFO("Calculating transformation...");
+    ROS_DEBUG_STREAM("Calculating transformation...");
 
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
     icp.setInputSource(PCxyz);
@@ -85,13 +88,13 @@ void callback(const sensor_msgs::PointCloud2ConstPtr &input)
     // Obtain the transformation that aligned cloud_source to cloud_source_registered
     Eigen::Matrix4f transf4f = icp.getFinalTransformation();
     const Eigen::Affine3d transf3d(transf4f.cast<double>());
-    ROS_INFO_STREAM("Affine3d: " << std::endl << transf4f);
+    //ROS_DEBUG_STREAM("Affine3d: " << std::endl << transf4f);
     geometry_msgs::Transform transform_msg;
     tf::transformEigenToMsg(transf3d, transform_msg);
   }
   else
   {
-    ROS_INFO("First cloud acquired.");
+    ROS_INFO_STREAM("First cloud acquired.");
   }
   // Save the cloud for next iteration
   PCxyzPrevious = PCxyz;
@@ -107,7 +110,7 @@ int main(int argc, char **argv)
   ros::Subscriber sub = nh.subscribe("kinect_input", 1, callback);
 
   // Spin
-  ROS_INFO("Node initialized.");
+  ROS_INFO_STREAM("Node initialized.");
 
   ros::spin();
   // return 0;
